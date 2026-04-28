@@ -10,9 +10,9 @@ const { el, inView } = useInView(0.25)
 
 <template>
   <span ref="el">
-    <span v-for="(line, i) in props.lines" :key="i" class="line">
+    <span v-for="(line, i) in props.lines" :key="i" class="c-line-reveal__line">
       <span
-        :class="props.italicIndices.includes(i) ? 'italic' : ''"
+        :class="props.italicIndices.includes(i) ? 'u-italic' : ''"
         :style="{
           transform: inView ? 'none' : 'translateY(110%)',
           display: 'block',
@@ -22,3 +22,13 @@ const { el, inView } = useInView(0.25)
     </span>
   </span>
 </template>
+
+<style lang="postcss">
+:where(.c-line-reveal__line) {
+  @apply block overflow-hidden;
+}
+
+:where(.c-line-reveal__line > span) {
+  @apply block;
+}
+</style>
