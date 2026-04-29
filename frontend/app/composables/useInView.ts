@@ -1,4 +1,3 @@
-import { ref } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
 
 export function useInView(threshold = 0.18) {
@@ -15,6 +14,15 @@ export function useInView(threshold = 0.18) {
     },
     { threshold, rootMargin: '0px 0px -10% 0px' }
   )
+
+  onMounted(() => {
+    if (!el.value) return
+    const rect = el.value.getBoundingClientRect()
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      inView.value = true
+      stop()
+    }
+  })
 
   return { el, inView }
 }

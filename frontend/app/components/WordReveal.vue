@@ -23,6 +23,12 @@ const words = computed(() => props.text.split(' '))
 :where(.c-word-reveal) {
   @apply inline-block overflow-hidden;
   vertical-align: bottom;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+:where(.u-italic .c-word-reveal) {
+  padding-inline-end: 0.14em;
 }
 
 :where(.c-word-reveal > span) {

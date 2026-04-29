@@ -26,6 +26,8 @@ const { el, inView } = useInView(0.25)
 <style lang="postcss">
 :where(.c-line-reveal__line) {
   @apply block overflow-hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
 }
 
 :where(.c-line-reveal__line > span) {

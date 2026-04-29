@@ -1,21 +1,14 @@
 <script setup lang="ts">
-const items = [
-  'Frontend engineering',
-  'Brand systems',
-  'Web apps',
-  'Mobile apps',
-  'Design + build',
-  'Architecture',
-  'Animation',
-  'Prototyping',
-]
+defineProps<{
+  block: { items?: string[] }
+}>()
 </script>
 
 <template>
-  <div class="c-marquee" aria-hidden="true">
+  <div v-if="block.items?.length" class="c-marquee" aria-hidden="true">
     <div class="c-marquee__track">
       <span v-for="n in 3" :key="n">
-        <template v-for="(item, i) in items" :key="i">
+        <template v-for="(item, i) in block.items" :key="i">
           <span>{{ item }}</span>
           <span class="c-marquee__dot" aria-hidden="true" />
         </template>

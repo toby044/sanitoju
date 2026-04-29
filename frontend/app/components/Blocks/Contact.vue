@@ -1,33 +1,39 @@
+<script setup lang="ts">
+const props = defineProps<{
+  block: {
+    sectionLabel?: string
+    headlineLines?: Array<{ text: string; italic: boolean }>
+    email?: string
+    contactItems?: Array<{ _key: string; label: string; value?: string; sub?: string }>
+  }
+}>()
+
+const lines = computed(() => props.block.headlineLines?.map(l => l.text) ?? [])
+const italicIndices = computed(() =>
+  props.block.headlineLines?.reduce<number[]>((acc, l, i) => l.italic ? [...acc, i] : acc, []) ?? [],
+)
+</script>
+
 <template>
   <section id="contact" class="c-contact">
     <div class="o-wrap">
-      <div class="u-eyebrow c-contact__eyebrow">§ 07 — Get in touch</div>
+      <div v-if="block.sectionLabel" class="u-eyebrow c-contact__eyebrow">{{ block.sectionLabel }}</div>
 
-      <h2 class="c-contact__headline">
-        <LineReveal :lines="['Have a project', 'in mind?']" :italic-indices="[1]" />
+      <h2 v-if="lines.length" class="c-contact__headline">
+        <LineReveal :lines="lines" :italic-indices="italicIndices" />
       </h2>
 
-      <a href="mailto:hello@sanitobi.studio" class="c-contact__cta">
+      <a v-if="block.email" :href="`mailto:${block.email}`" class="c-contact__cta">
         <span class="c-contact__cta-dot" aria-hidden="true" />
-        hello@sanitobi.studio
+        {{ block.email }}
         <ArrowIcon :size="18" />
       </a>
 
-      <div class="c-contact__grid" style="margin-top: 96px;">
-        <div>
-          <div class="c-contact__grid-label">Studio</div>
-          <div class="c-contact__grid-value">Sanitobi</div>
-          <div class="c-contact__grid-sub">Independent practice, Denmark</div>
-        </div>
-        <div>
-          <div class="c-contact__grid-label">Booking</div>
-          <div class="c-contact__grid-value">cal.com / sanitobi</div>
-          <div class="c-contact__grid-sub">30-minute introduction calls</div>
-        </div>
-        <div>
-          <div class="c-contact__grid-label">Elsewhere</div>
-          <div class="c-contact__grid-value">are.na · read.cv · github</div>
-          <div class="c-contact__grid-sub">Quietly, occasionally</div>
+      <div v-if="block.contactItems?.length" class="c-contact__grid" style="margin-top: 96px;">
+        <div v-for="item in block.contactItems" :key="item._key">
+          <div class="c-contact__grid-label">{{ item.label }}</div>
+          <div class="c-contact__grid-value">{{ item.value }}</div>
+          <div class="c-contact__grid-sub">{{ item.sub }}</div>
         </div>
       </div>
     </div>

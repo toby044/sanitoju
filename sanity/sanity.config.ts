@@ -5,7 +5,7 @@ import {createPageTreeDocumentList} from '@q42/sanity-plugin-page-tree'
 import {schemaTypes} from './schemaTypes'
 import {pageTreeConfig} from './pageTreeConfig'
 
-const singletonTypes = new Set(['frontPage'])
+const singletonTypes = new Set(['frontPage', 'settings'])
 
 export default defineConfig({
   name: 'default',
@@ -28,6 +28,11 @@ export default defineConfig({
                   extendDocumentList: (builder) => builder.id('pages').title('Pages'),
                 }),
               ),
+            S.divider(),
+            S.listItem()
+              .title('Settings')
+              .id('settings')
+              .child(S.document().schemaType('settings').documentId('settings')),
             S.divider(),
             S.documentTypeListItem('event').title('Events'),
             S.documentTypeListItem('artist').title('Artists'),

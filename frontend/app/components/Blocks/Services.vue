@@ -1,11 +1,12 @@
 <script setup lang="ts">
-const rows = [
-  { n: '01', name: 'Frontend engineering', desc: 'Production-grade React, Next.js, Nuxt and TypeScript — accessibility, performance budgets, edge cases done right.' },
-  { n: '02', name: 'Design + development', desc: 'Designing in the browser, in code. One person from Figma to deploy, with fewer handoffs to lose detail in.' },
-  { n: '03', name: 'Brand establishment', desc: 'Light identity work — wordmarks, type systems, motion principles — the foundations a young company needs to look like itself.' },
-  { n: '04', name: 'Mobile apps', desc: 'React Native and Expo for companion apps and lightweight products. Native feel without the native team.' },
-  { n: '05', name: 'Architecture & consulting', desc: 'Frontend reviews, design-system audits, hiring help. Clear written deliverables for teams that are stuck.' },
-]
+defineProps<{
+  block: {
+    sectionLabel?: string
+    headlinePart1?: string
+    headlinePart2?: string
+    rows?: Array<{ _key: string; name: string; description?: string }>
+  }
+}>()
 </script>
 
 <template>
@@ -13,23 +14,23 @@ const rows = [
     <div class="o-wrap">
       <div class="o-section-head">
         <div>
-          <div class="o-section-head__num">§ 02 — Services</div>
+          <div class="o-section-head__num">{{ block.sectionLabel }}</div>
         </div>
         <h2 class="o-section-head__lead">
-          <WordReveal text="Five things, done thoroughly," />
+          <WordReveal v-if="block.headlinePart1" :text="block.headlinePart1" />
           {{ ' ' }}
-          <span class="u-italic"><WordReveal text="rather than everything." :delay="300" /></span>
+          <span v-if="block.headlinePart2" class="u-italic">
+            <WordReveal :text="block.headlinePart2" :delay="300" />
+          </span>
         </h2>
       </div>
 
-      <div class="c-services__rows">
-        <div v-for="row in rows" :key="row.n" class="c-services__row">
-          <span class="c-services__row-num">{{ row.n }}</span>
+      <div v-if="block.rows?.length" class="c-services__rows">
+        <div v-for="(row, i) in block.rows" :key="row._key" class="c-services__row">
+          <span class="c-services__row-num">{{ String(i + 1).padStart(2, '0') }}</span>
           <span class="c-services__row-name">{{ row.name }}</span>
-          <span class="c-services__row-desc">{{ row.desc }}</span>
-          <span class="c-services__row-arrow">
-            <ArrowIcon :size="18" />
-          </span>
+          <span class="c-services__row-desc">{{ row.description }}</span>
+          <span class="c-services__row-arrow"><ArrowIcon :size="18" /></span>
         </div>
       </div>
     </div>

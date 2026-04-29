@@ -1,46 +1,20 @@
 <script setup lang="ts">
-const tiers = [
-  {
-    label: 'Sprint',
-    name: 'Two-week build',
-    price: '€6.4k',
-    suffix: 'Fixed price · 2 weeks',
-    featured: false,
-    items: [
-      'Marketing site or landing page',
-      'Design + build, end to end',
-      'Up to two rounds of revisions',
-      'Deployed and handed off',
-    ],
-  },
-  {
-    label: 'Most chosen',
-    name: 'Project',
-    price: '€18k+',
-    suffix: 'Fixed price · 4–8 weeks',
-    featured: true,
-    items: [
-      'Full website or product surface',
-      'Brand foundations, if needed',
-      'Animation + motion principles',
-      'CMS, analytics, deployment',
-      'Two weeks of post-launch care',
-    ],
-  },
-  {
-    label: 'Ongoing',
-    name: 'Embedded',
-    price: '€1.6k',
-    suffix: 'Per day · 1–3 days/week',
-    featured: false,
-    items: [
-      'Embedded with your team',
-      'Async by default, calls when useful',
-      'Frontend, design or both',
-      'Monthly minimum, no lock-in',
-    ],
-  },
-]
+defineProps<{
+  block: {
+    sectionLabel?: string
+    headlinePart1?: string
+    headlinePart2?: string
+    tiers?: Array<{
+      _key: string
+      label?: string
+      name: string
+      price?: string
+      suffix?: string
+      featured?: boolean
+      items?: string[]
+    }>
+  }
+}>()
 </script>
 
 <template>
@@ -48,19 +22,21 @@ const tiers = [
     <div class="o-wrap">
       <div class="o-section-head">
         <div>
-          <div class="o-section-head__num">§ 05 — Engagement</div>
+          <div class="o-section-head__num">{{ block.sectionLabel }}</div>
         </div>
         <h2 class="o-section-head__lead">
-          <WordReveal text="Three ways to work" />
+          <WordReveal v-if="block.headlinePart1" :text="block.headlinePart1" />
           {{ ' ' }}
-          <span class="u-italic"><WordReveal text="together." :delay="240" /></span>
+          <span v-if="block.headlinePart2" class="u-italic">
+            <WordReveal :text="block.headlinePart2" :delay="240" />
+          </span>
         </h2>
       </div>
 
-      <RevealBlock class="c-pricing__grid" :stagger="true">
+      <RevealBlock v-if="block.tiers?.length" class="c-pricing__grid" :stagger="true">
         <div
-          v-for="tier in tiers"
-          :key="tier.name"
+          v-for="tier in block.tiers"
+          :key="tier._key"
           :class="['c-pricing__card', tier.featured ? 'c-pricing__card--featured' : '']"
         >
           <div class="c-pricing__card-label">
@@ -70,7 +46,7 @@ const tiers = [
           <div class="c-pricing__card-name">{{ tier.name }}</div>
           <div class="c-pricing__card-price">{{ tier.price }}</div>
           <div class="c-pricing__card-suffix">{{ tier.suffix }}</div>
-          <ul class="c-pricing__card-items">
+          <ul v-if="tier.items?.length" class="c-pricing__card-items">
             <li v-for="item in tier.items" :key="item">{{ item }}</li>
           </ul>
           <Button

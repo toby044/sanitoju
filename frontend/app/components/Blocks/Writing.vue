@@ -1,10 +1,28 @@
 <script setup lang="ts">
-const posts = [
-  { date: '2026 · 03', title: 'Designing in the browser, eight years on', topic: 'Practice' },
-  { date: '2026 · 02', title: 'A small case for fewer pages', topic: 'Web' },
-  { date: '2025 · 11', title: 'Type systems for two-person companies', topic: 'Brand' },
-  { date: '2025 · 09', title: 'What I look for in a frontend repo', topic: 'Engineering' },
-]
+defineProps<{
+  block: {
+    sectionLabel?: string
+    headlinePart1?: string
+    headlinePart2?: string
+  }
+}>()
+
+const { data: posts } = useSanityQuery<Array<{
+  _id: string
+  title: string
+  publishedAt: string
+  topic?: string
+  slug: { current: string }
+}>>(`
+  *[_type == "post"] | order(publishedAt desc) [0...4] {
+    _id, title, publishedAt, topic, slug
+  }
+`)
+
+function formatDate(dateStr: string) {
+  const [year, month] = dateStr.split('-')
+  return `${year} · ${month}`
+}
 </script>
 
 <template>
@@ -12,22 +30,29 @@ const posts = [
     <div class="o-wrap">
       <div class="o-section-head">
         <div>
-          <div class="o-section-head__num">§ 06 — Writing</div>
+          <div class="o-section-head__num">{{ block.sectionLabel }}</div>
         </div>
         <h2 class="o-section-head__lead">
-          <WordReveal text="Notes, occasionally," />
+          <WordReveal v-if="block.headlinePart1" :text="block.headlinePart1" />
           {{ ' ' }}
-          <span class="u-italic"><WordReveal text="when something is worth saying." :delay="260" /></span>
+          <span v-if="block.headlinePart2" class="u-italic">
+            <WordReveal :text="block.headlinePart2" :delay="260" />
+          </span>
         </h2>
       </div>
 
-      <div class="c-writing__list">
-        <a v-for="(post, i) in posts" :key="i" class="c-writing__row">
-          <span class="c-writing__row-date">{{ post.date }}</span>
+      <div v-if="posts?.length" class="c-writing__list">
+        <NuxtLink
+          v-for="post in posts"
+          :key="post._id"
+          :to="`/writing/${post.slug.current}`"
+          class="c-writing__row"
+        >
+          <span class="c-writing__row-date">{{ formatDate(post.publishedAt) }}</span>
           <span class="c-writing__row-title">{{ post.title }}</span>
           <span class="c-writing__row-topic">{{ post.topic }}</span>
           <span class="c-writing__row-arrow"><ArrowIcon :size="16" /></span>
-        </a>
+        </NuxtLink>
       </div>
     </div>
   </section>

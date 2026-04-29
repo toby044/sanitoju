@@ -1,15 +1,29 @@
+<script setup lang="ts">
+const { data: settings } = await useSettings();
+
+const year = computed(
+  () => settings.value?.foundedYear ?? new Date().getFullYear(),
+);
+</script>
+
 <template>
   <footer class="c-footer">
     <div class="o-wrap">
       <div class="c-footer__mark">
-        <span>Sanitobi</span>
+        <span>{{ settings?.studioName ?? "Sanitoju" }}</span>
         <span class="c-footer__mark-dot" aria-hidden="true" />
       </div>
 
       <div class="c-footer__bottom">
-        <span>© 2026 Sanitobi · Independent practice</span>
+        <span
+          >© {{ year }} {{ settings?.studioName ?? "Sanitoju" }} ·
+          {{ settings?.tagline ?? "Independent practice" }}</span
+        >
         <span><LiveClock /></span>
-        <span>Built by hand · Aarhus, DK</span>
+        <span
+          >{{ settings?.footerTagline ?? "Built by hand"
+          }}{{ settings?.location ? " · " + settings.location : "" }}</span
+        >
       </div>
     </div>
   </footer>
@@ -29,6 +43,7 @@
   font-size: clamp(80px, 18vw, 280px);
   letter-spacing: -0.05em;
   line-height: 0.85;
+  padding-bottom: 0.14em;
   margin: 32px 0;
 }
 

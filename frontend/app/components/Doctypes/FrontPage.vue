@@ -6,7 +6,7 @@ useDocumentSeo(props.document);
 </script>
 
 <template>
-  <main>
-    <BlockList v-if="document.pageBuilder?.length" :blocks="document.pageBuilder" />
-  </main>
+  <NuxtLayout name="site">
+    <BlockList v-if="document.blocks?.length" :blocks="document.blocks" />
+  </NuxtLayout>
 </template>

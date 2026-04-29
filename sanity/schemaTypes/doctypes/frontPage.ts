@@ -10,7 +10,6 @@ export const frontPageType = defineDoctype(
         name: 'title',
         type: 'string',
         group: 'content',
-        initialValue: 'Front Page',
         validation: (r) => r.required(),
       }),
       defineField({
@@ -18,21 +17,19 @@ export const frontPageType = defineDoctype(
         type: 'array',
         group: 'content',
         of: [
-          {
-            type: 'heroBlock',
-          },
-          {
-            type: 'textBlock',
-          },
-          {
-            type: 'mediaBlock',
-          },
-          {
-            type: 'linkListBlock',
-          },
-          {
-            type: 'mediaGalleryBlock',
-          },
+          {type: 'hero'},
+          {type: 'marquee'},
+          {type: 'work'},
+          {type: 'services'},
+          {type: 'about'},
+          {type: 'process'},
+          {type: 'pricing'},
+          {type: 'writing'},
+          {type: 'contact'},
+          {type: 'textBlock'},
+          {type: 'mediaBlock'},
+          {type: 'linkListBlock'},
+          {type: 'mediaGalleryBlock'},
         ],
       }),
       defineField({

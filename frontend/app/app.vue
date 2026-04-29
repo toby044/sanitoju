@@ -1,18 +1,14 @@
 <script setup>
 useHead({
-  meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }],
-  link: [{ rel: 'icon', href: '/favicon.ico' }],
-  htmlAttrs: { lang: 'en' },
-})
+  meta: [{ name: "viewport", content: "width=device-width, initial-scale=1" }],
+  link: [{ rel: "icon", href: "/favicon.ico" }],
+  htmlAttrs: { lang: "en" },
+});
 </script>
 
 <template>
-  <div>
-    <div class="c-noise" aria-hidden="true" />
-    <ClientOnly>
-      <SiteCursor />
-    </ClientOnly>
-    <NuxtPage />
+  <div id="app">
+    <NuxtLayout />
   </div>
 </template>
 

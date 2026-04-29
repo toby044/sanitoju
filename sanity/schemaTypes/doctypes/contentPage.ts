@@ -12,22 +12,33 @@ export const contentPageType = defineDoctype({
       validation: (r) => r.required(),
     }),
     defineField({
+      name: 'showHeader',
+      type: 'boolean',
+      group: 'settings',
+      description: 'Hides the title/description part of the content page.',
+    }),
+    defineField({
+      name: 'description',
+      type: 'text',
+      group: 'content',
+    }),
+    defineField({
       name: 'blocks',
       type: 'array',
       group: 'content',
       of: [
-        {
-          type: 'heroBlock',
-        },
-        {
-          type: 'textBlock',
-        },
-        {
-          type: 'mediaBlock',
-        },
-        {
-          type: 'timelineBlock',
-        },
+        {type: 'marquee'},
+        {type: 'work'},
+        {type: 'services'},
+        {type: 'about'},
+        {type: 'process'},
+        {type: 'pricing'},
+        {type: 'writing'},
+        {type: 'contact'},
+        {type: 'textBlock'},
+        {type: 'mediaBlock'},
+        {type: 'linkListBlock'},
+        {type: 'mediaGalleryBlock'},
       ],
     }),
     defineField({
@@ -37,4 +48,7 @@ export const contentPageType = defineDoctype({
       group: 'seo',
     }),
   ],
+  initialValue: {
+    showHeader: true,
+  },
 })

@@ -2,11 +2,13 @@
 import type { SanityDocument } from "@sanity/client";
 import type { PageMetadata } from "@q42/sanity-plugin-page-tree/client";
 import { usePageTree } from "~/composables/usePageTree";
+import FrontPage from "~/components/Doctypes/FrontPage.vue";
 import ContentPage from "~/components/Doctypes/ContentPage.vue";
 import EventsList from "~/components/Doctypes/EventsList.vue";
 
 const route = useRoute();
-const segments = route.params.slug as string[];
+const rawSlug = route.params.slug;
+const segments = Array.isArray(rawSlug) ? rawSlug : rawSlug ? [rawSlug] : [];
 const path = "/" + segments.join("/");
 
 const pageTree = usePageTree();
@@ -18,13 +20,14 @@ const { data: document } = await useSanityQuery<SanityDocument>(
   { id: pageMeta?._id ?? "" }
 );
 
-const componentMap: Record<string, Component> = {
+const doctypeMap: Record<string, Component> = {
+  frontPage: FrontPage,
   contentPage: ContentPage,
   eventList: EventsList,
 };
 
 const resolvedComponent = computed(() =>
-  document.value?._type ? (componentMap[document.value._type] ?? null) : null
+  document.value?._type ? (doctypeMap[document.value._type] ?? null) : null
 );
 </script>
 

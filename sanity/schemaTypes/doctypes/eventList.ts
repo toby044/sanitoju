@@ -16,12 +16,7 @@ export const eventListType = defineDoctype({
       type: 'array',
       group: 'content',
       of: [
-        {
-          type: 'heroBlock',
-        },
-        {
-          type: 'textBlock',
-        },
+        {type: 'textBlock'},
       ],
     }),
     defineField({
