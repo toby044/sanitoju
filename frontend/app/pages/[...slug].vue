@@ -12,8 +12,8 @@ const segments = Array.isArray(rawSlug) ? rawSlug : rawSlug ? [rawSlug] : [];
 const path = "/" + segments.join("/");
 
 const pageTree = usePageTree();
-const allPages = await pageTree.getAllPageMetadata();
-const pageMeta = allPages.find((p: PageMetadata) => p.path === path);
+const { data: allPages } = await useAsyncData("page-tree", () => pageTree.getAllPageMetadata());
+const pageMeta = allPages.value?.find((p: PageMetadata) => p.path === path);
 
 const { data: document } = await useSanityQuery<SanityDocument>(
   groq`*[_id == $id][0]`,

@@ -3,6 +3,10 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
 
+  routeRules: {
+    "/**": { swr: process.env.NODE_ENV === "production" ? 3600 : false },
+  },
+
   modules: [
     "@nuxt/icon",
     "@nuxt/image",
@@ -25,10 +29,15 @@ export default defineNuxtConfig({
     },
   },
 
+  runtimeConfig: {
+    sanityWebhookSecret: process.env.SANITY_WEBHOOK_SECRET ?? "",
+  },
+
   sanity: {
     projectId: "u13uvw6c",
     dataset: "production",
     apiVersion: "2025-10-01",
+    useCdn: true,
     typegen: {
       enabled: true,
       schemaTypesPath: "../sanity/schemaTypes",
