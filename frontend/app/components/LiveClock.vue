@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const now = ref(new Date())
+const formatted = ref('--:--:--')
 let timer: ReturnType<typeof setInterval>
 
 const formatter = new Intl.DateTimeFormat('en-GB', {
@@ -10,10 +10,10 @@ const formatter = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Europe/Copenhagen',
 })
 
-const formatted = computed(() => formatter.format(now.value))
-
 onMounted(() => {
-  timer = setInterval(() => { now.value = new Date() }, 1000)
+  const update = () => { formatted.value = formatter.format(new Date()) }
+  update()
+  timer = setInterval(update, 1000)
 })
 onUnmounted(() => clearInterval(timer))
 </script>
