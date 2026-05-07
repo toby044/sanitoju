@@ -1,28 +1,45 @@
 <script setup lang="ts">
-import { createImageUrlBuilder, type SanityImageSource } from '@sanity/image-url'
+import {
+  createImageUrlBuilder,
+  type SanityImageSource,
+} from "@sanity/image-url";
 
 const props = defineProps<{
   block: {
-    sectionLabel?: string
-    headlinePart1?: string
-    headlinePart2?: string
+    sectionLabel?: string;
+    headlinePart1?: string;
+    headlinePart2?: string;
     items?: Array<{
-      _key: string
-      tag?: string
-      title: string
-      year?: string
-      projectType?: string
-      span?: number
-      thumbnail?: SanityImageSource
-    }>
-  }
-}>()
+      _key: string;
+      span?: number;
+      project?: {
+        _id: string;
+        title?: string;
+        year?: string;
+        projectType?: string;
+        thumbnail?: SanityImageSource;
+      };
+    }>;
+  };
+}>();
 
-const { projectId, dataset } = useSanity().client.config()
+const { projectId, dataset } = useSanity().client.config();
 const urlFor = (source: SanityImageSource) =>
   projectId && dataset
     ? createImageUrlBuilder({ projectId, dataset }).image(source)
-    : null
+    : null;
+
+const pageTree = usePageTree();
+const { data: pages } = await useAsyncData("page-tree", () =>
+  pageTree.getAllPageMetadata(),
+);
+const projectUrl = (id?: string) =>
+  id ? (pages.value?.find((p) => p._id === id)?.path ?? "#") : "#";
+
+const tagFor = (index: number, projectType?: string) => {
+  const num = String(index + 1).padStart(2, "0");
+  return projectType ? `${num} / ${projectType}` : num;
+};
 </script>
 
 <template>
@@ -34,7 +51,7 @@ const urlFor = (source: SanityImageSource) =>
         </div>
         <h2 class="o-section-head__lead">
           <WordReveal v-if="block.headlinePart1" :text="block.headlinePart1" />
-          {{ ' ' }}
+          {{ " " }}
           <span v-if="block.headlinePart2" class="u-italic">
             <WordReveal :text="block.headlinePart2" :delay="300" />
           </span>
@@ -42,29 +59,38 @@ const urlFor = (source: SanityImageSource) =>
       </div>
 
       <div v-if="block.items?.length" class="c-work__grid">
-        <RevealBlock
-          v-for="item in block.items"
+        <NuxtLink
+          v-for="(item, index) in block.items"
           :key="item._key"
-          as="a"
+          :to="projectUrl(item.project?._id)"
           :class="`c-work__card c-work__card--span-${item.span ?? 6}`"
         >
-          <div class="c-work__thumb">
-            <div class="c-work__thumb-art">
-              <img
-                v-if="item.thumbnail"
-                :src="urlFor(item.thumbnail)?.width(800).height(600).url() ?? undefined"
-                :alt="item.title"
-                class="c-work__thumb-img"
-              />
+          <RevealBlock>
+            <div class="c-work__thumb">
+              <div class="c-work__thumb-art">
+                <img
+                  v-if="item.project?.thumbnail"
+                  :src="
+                    urlFor(item.project.thumbnail)
+                      ?.width(800)
+                      .height(600)
+                      .url() ?? undefined
+                  "
+                  :alt="item.project?.title"
+                  class="c-work__thumb-img"
+                />
+              </div>
+              <span class="c-work__pill">{{
+                tagFor(index, item.project?.projectType)
+              }}</span>
+              <span class="c-work__year">{{ item.project?.year }}</span>
             </div>
-            <span class="c-work__pill">{{ item.tag }}</span>
-            <span class="c-work__year">{{ item.year }}</span>
-          </div>
-          <div class="c-work__meta">
-            <span class="c-work__title">{{ item.title }}</span>
-            <span class="c-work__tag">{{ item.projectType }}</span>
-          </div>
-        </RevealBlock>
+            <div class="c-work__meta">
+              <span class="c-work__title">{{ item.project?.title }}</span>
+              <span class="c-work__tag">{{ item.project?.projectType }}</span>
+            </div>
+          </RevealBlock>
+        </NuxtLink>
       </div>
     </div>
   </section>
@@ -86,16 +112,26 @@ const urlFor = (source: SanityImageSource) =>
   @apply relative cursor-pointer block;
 }
 
-:where(.c-work__card--span-7) { grid-column: span 7; }
-:where(.c-work__card--span-5) { grid-column: span 5; }
-:where(.c-work__card--span-6) { grid-column: span 6; }
-:where(.c-work__card--span-12) { grid-column: span 12; }
+:where(.c-work__card--span-7) {
+  grid-column: span 7;
+}
+:where(.c-work__card--span-5) {
+  grid-column: span 5;
+}
+:where(.c-work__card--span-6) {
+  grid-column: span 6;
+}
+:where(.c-work__card--span-12) {
+  grid-column: span 12;
+}
 
 @media (max-width: 900px) {
   :where(.c-work__card--span-7),
   :where(.c-work__card--span-5),
   :where(.c-work__card--span-6),
-  :where(.c-work__card--span-12) { grid-column: span 12; }
+  :where(.c-work__card--span-12) {
+    grid-column: span 12;
+  }
 }
 
 :where(.c-work__thumb) {
@@ -103,18 +139,24 @@ const urlFor = (source: SanityImageSource) =>
   aspect-ratio: 4 / 3;
   background: var(--bg-deep);
   border-radius: 8px;
-  transition: transform 0.7s cubic-bezier(.22,.61,.36,1);
+  transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-:where(.c-work__card--span-12 .c-work__thumb) { aspect-ratio: 16 / 7; }
-:where(.c-work__card):hover .c-work__thumb { transform: scale(0.985); }
+:where(.c-work__card--span-12 .c-work__thumb) {
+  aspect-ratio: 16 / 7;
+}
+:where(.c-work__card):hover .c-work__thumb {
+  transform: scale(0.985);
+}
 
 :where(.c-work__thumb-art) {
   @apply absolute inset-0 flex items-center justify-center;
-  transition: transform 1.2s cubic-bezier(.22,.61,.36,1);
+  transition: transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-:where(.c-work__card):hover .c-work__thumb-art { transform: scale(1.06); }
+:where(.c-work__card):hover .c-work__thumb-art {
+  transform: scale(1.06);
+}
 
 :where(.c-work__thumb-img) {
   @apply absolute inset-0 w-full h-full object-cover;
@@ -128,7 +170,7 @@ const urlFor = (source: SanityImageSource) =>
   font-size: 11px;
   letter-spacing: 0.1em;
   background: rgba(255, 255, 255, 0.85);
-  color: #0E0E0E;
+  color: #0e0e0e;
   border-radius: 999px;
   backdrop-filter: blur(8px);
 }

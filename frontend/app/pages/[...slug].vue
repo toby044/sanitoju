@@ -16,7 +16,20 @@ const { data: allPages } = await useAsyncData("page-tree", () => pageTree.getAll
 const pageMeta = allPages.value?.find((p: PageMetadata) => p.path === path);
 
 const { data: document } = await useSanityQuery<SanityDocument>(
-  groq`*[_id == $id][0]`,
+  groq`*[_id == $id][0]{
+    ...,
+    blocks[]{
+      ...,
+      _type == 'work' => {
+        ...,
+        items[]{
+          _key,
+          span,
+          project->{_id, title, year, projectType, thumbnail}
+        }
+      }
+    }
+  }`,
   { id: pageMeta?._id ?? "" }
 );
 
