@@ -10,20 +10,23 @@ export const workBlock = defineType({
     defineField({name: 'headlinePart2', type: 'string', description: 'Rendered in italic'}),
     defineField({
       name: 'items',
-      title: 'Work items',
+      title: 'Showcase items',
       type: 'array',
       of: [
         {
           type: 'object',
           name: 'workItem',
           fields: [
-            defineField({name: 'tag', type: 'string', description: 'e.g. "01 / Brand & web"'}),
-            defineField({name: 'title', type: 'string', validation: (r) => r.required()}),
-            defineField({name: 'year', type: 'string'}),
-            defineField({name: 'projectType', title: 'Project type', type: 'string'}),
+            defineField({
+              name: 'project',
+              type: 'reference',
+              to: [{type: 'project'}],
+              validation: (r) => r.required(),
+            }),
             defineField({
               name: 'span',
               type: 'number',
+              description: 'Layout span on the 12-column grid.',
               options: {
                 list: [
                   {title: 'Narrow (5 cols)', value: 5},
@@ -32,10 +35,13 @@ export const workBlock = defineType({
                 ],
               },
             }),
-            defineField({name: 'thumbnail', type: 'image', options: {hotspot: true}}),
           ],
           preview: {
-            select: {title: 'title', subtitle: 'projectType', media: 'thumbnail'},
+            select: {
+              title: 'project.title',
+              subtitle: 'project.projectType',
+              media: 'project.thumbnail',
+            },
           },
         },
       ],

@@ -46,7 +46,6 @@ function handleResize(): void {
       :class="['c-site-header', scrolled ? 'c-site-header--scrolled' : '']"
     >
       <NuxtLink to="/" class="c-site-header__logo">
-        <LogoMark :size="22" />
         <span>{{ settings?.studioName ?? "Sanitoju" }}</span>
       </NuxtLink>
       <div class="c-site-header__links">

@@ -110,7 +110,9 @@ const italicIndices = computed(
 }
 
 @media (max-width: 720px) {
-  :where(.c-hero__meta) { @apply grid-cols-1 gap-24px; }
+  :where(.c-hero__meta) {
+    @apply grid-cols-1 gap-24px;
+  }
 }
 
 :where(.c-hero__cell-label) {

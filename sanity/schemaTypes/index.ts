@@ -8,6 +8,7 @@ import {frontPageType} from './doctypes/frontPage'
 import {contentPageType} from './doctypes/contentPage'
 import {eventListType} from './doctypes/eventList'
 import {postType} from './doctypes/post'
+import {projectType} from './doctypes/project'
 
 // Generic block types
 import {textBlock} from './blocks/text'
@@ -40,6 +41,7 @@ export const schemaTypes = [
   contentPageType,
   eventListType,
   postType,
+  projectType,
 
   // Generic blocks (used on content pages)
   textBlock,
